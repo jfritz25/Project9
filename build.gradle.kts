@@ -10,12 +10,18 @@ plugins {
 buildscript {
     repositories {
         google()
+        mavenCentral()
     }
     dependencies {
         val nav_version = "2.7.4"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
         classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.8.0-1.0.8")
         classpath("com.google.gms:google-services:4.4.0")
+
+        val kotlin_version by extra("1.6.21")
+        classpath("com.google.gms:google-services:4.4.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+
 
     }
 }
