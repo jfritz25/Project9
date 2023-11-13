@@ -7,6 +7,11 @@
         name="viewModel"
         type="com.example.project9.SelfieViewModel" />
     </data>
+    <data>
+        <variable
+            name="viewModelAccel"
+            type="com.example.project9.SensorViewModel" />
+    </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">

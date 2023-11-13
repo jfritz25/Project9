@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 
-class AccelerometerSensor(
+class Accelerometer(
     context: Context
 ): AndroidSensor(
     context = context,

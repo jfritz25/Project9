@@ -27,6 +27,8 @@
         <action
             android:id="@+id/action_selfies_to_login"
             app:destination="@+id/loginFragment"/>
+        <action android:id="@+id/action_selfies_to_picture"
+            app:destination="@+id/takePicture"/>
 
     </fragment>
 
@@ -42,4 +44,19 @@
             app:destination="@+id/selfiesFragment"/>
 
     </fragment>
+
+
+    <fragment
+        android:id="@+id/takePicture"
+        android:name="com.example.project9.TakePictureFragment"
+        android:label="fragment_take_picture"
+        tools:layout="@layout/fragment_take_photo">
+
+    <action
+        android:id="@+id/action_picture_to_selfies"
+        app:destination="@+id/selfiesFragment"/>
+
+    </fragment>
+
+
 </navigation>

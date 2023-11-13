@@ -12,8 +12,8 @@ import com.example.project9.model.Selfie
 import java.math.BigInteger
 import java.security.MessageDigest
 
-class PostsAdapter(val context: Context)
-    : ListAdapter<Selfie, PostsAdapter.PostItemViewHolder>(PostDiffItemCallback()) {
+class SelfieAdapter(val context: Context)
+    : ListAdapter<Selfie, SelfieAdapter.PostItemViewHolder>(SelfieDiffItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             : PostItemViewHolder = PostItemViewHolder.inflateFrom(parent)
     override fun onBindViewHolder(holder: PostItemViewHolder, position: Int) {
