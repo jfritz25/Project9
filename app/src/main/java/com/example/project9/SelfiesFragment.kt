@@ -1,6 +1,10 @@
 package com.example.project9
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +20,16 @@ class SelfiesFragment : Fragment() {
     val TAG = "PostsFragment"
     private var _binding: FragmentSelfiesBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var sensorManager: SensorManager
+
+    private var sensor: Sensor? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         _binding = FragmentSelfiesBinding.inflate(inflater, container, false)
         val view = binding.root
         val viewModel : SelfieViewModel by activityViewModels()
@@ -35,28 +44,21 @@ class SelfiesFragment : Fragment() {
 //                adapter.notifyDataSetChanged()
             }
         })
+        val sensor = if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)} else {
+                Log.d("Sensors", "Can't find accelerometer!!")
 
+        }
         binding.logout.setOnClickListener {
             viewModel.signOut()
             view.findNavController().navigate(R.id.action_selfies_to_login)
         }
+
+
+
         return view
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        binding.toolbar.inflateMenu(R.menu.menu_posts)
-//        binding.toolbar.setOnMenuItemClickListener {
-//            when (it.itemId) {
-//                R.id.menu_profile -> {
-//                    // Navigate to profile screen.
-//                    view.findNavController().navigate(R.id.action_postsFragment_to_profileFragment)
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-//    }
 
 
 
