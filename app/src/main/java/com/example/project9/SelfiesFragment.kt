@@ -53,8 +53,6 @@ class SelfiesFragment : Fragment() {
         viewModelAccel.shakeEvent.observe(viewLifecycleOwner, Observer { isShaken ->
             if (isShaken) {
                 viewModelAccel.shakeEvent.value = false
-
-
             }
         })
         binding.logout.setOnClickListener {

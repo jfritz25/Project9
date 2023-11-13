@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -34,13 +35,10 @@ class SelfieAdapter(val context: Context)
 
         fun bind(selfie: Selfie, context: Context) {
             Glide.with(context).load(selfie.imageUrl).into(binding.ivSelfie)
-        }
-        private fun getProfileImageUrl(username: String): String {
-            val digest = MessageDigest.getInstance("MD5")
-            val hash = digest.digest(username.toByteArray())
-            val bigInt = BigInteger(hash)
-            val hex = bigInt.abs().toString(16)
-            return "https://www.gravatar.com/avatar/$hex?d=identicon"
+            binding.ivSelfie.setOnClickListener {
+                val action = SelfiesFragmentDirections.actionSelfiesToSelfie(selfie.imageUrl)
+                binding.root.findNavController().navigate(action)
+            }
         }
     }
 }

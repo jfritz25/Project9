@@ -23,10 +23,16 @@
 
         <action
             android:id="@+id/action_selfies_to_selfie"
-            app:destination="@+id/selfieFragment"/>
+            app:destination="@+id/selfieFragment"
+            >
+        <argument
+            android:name="url"
+            app:argType="string"/>
+        </action>
         <action
             android:id="@+id/action_selfies_to_login"
             app:destination="@+id/loginFragment"/>
+
         <action android:id="@+id/action_selfies_to_picture"
             app:destination="@+id/takePicture"/>
 
@@ -42,6 +48,9 @@
         <action
             android:id="@+id/action_selfie_to_selfies"
             app:destination="@+id/selfiesFragment"/>
+        <argument
+            android:name="url"
+            app:argType="string"/>
 
     </fragment>
 
