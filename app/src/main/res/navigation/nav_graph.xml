@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.project9.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+    <action
+        android:id="@+id/action_login_to_selfies"
+        app:destination="@id/selfiesFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/selfiesFragment"
+        android:name="com.example.project9.SelfiesFragment"
+        android:label="fragment_selfies"
+        tools:layout="@layout/fragment_selfies">
+
+        <action
+            android:id="@+id/action_selfies_to_selfie"
+            app:destination="@+id/selfieFragment"/>
+        <action
+            android:id="@+id/action_selfies_to_login"
+            app:destination="@+id/loginFragment"/>
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/selfieFragment"
+        android:name="com.example.project9.SelfieFragment"
+        android:label="fragment_selfie"
+        tools:layout="@layout/fragment_selfie">
+
+        <action
+            android:id="@+id/action_selfie_to_selfies"
+            app:destination="@+id/selfiesFragment"/>
+
+    </fragment>
+</navigation>
