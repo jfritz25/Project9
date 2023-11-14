@@ -90,15 +90,15 @@ class TakePictureFragment : Fragment() {
     fun uploadImageToFirestore(imageUri: Uri) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-        val imagesRef = storageRef.child("users/${binding.viewModel.signedInUser.toString()}/images/${imageUri.lastPathSegment}")
+        val imagesRef = storageRef.child("users/${binding.viewModel?.signedInUser.toString()}/images/${imageUri.lastPathSegment}")
 
         val uploadTask = imagesRef.putFile(imageUri)
         uploadTask.addOnFailureListener {
             Log.d("Upload", "Failed to upload image")
         }.addOnSuccessListener { taskSnapshot ->
             Log.d("Upload", "Image uploaded successfully")
-            val s = Selfie(imageUri, User(binding.viewModel.signedInUser!!.username))
-            binding.viewModel.selfies.value?.add(s)
+            val s = Selfie(imageUri.toString(), User(binding.viewModel?.signedInUser!!.username))
+            binding.viewModel?.selfies?.value?.add(s)
             view?.findNavController()?.navigate(R.id.action_picture_to_selfies)
 
         }
@@ -201,8 +201,7 @@ class TakePictureFragment : Fragment() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
+                Manifest.permission.CAMERA
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

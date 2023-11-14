@@ -43,7 +43,7 @@ class SensorsViewModel
             accelerometerData[2] = accelerometerData[2] * 0.9f + delta
 
 
-            if (accelerometerData[2] > 12) {
+            if (accelerometerData[2] > 8) {
                 onShake()
 
             }

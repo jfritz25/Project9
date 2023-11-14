@@ -6,11 +6,9 @@
     <variable
         name="viewModel"
         type="com.example.project9.SelfieViewModel" />
-    </data>
-    <data>
-        <variable
-            name="viewModelAccel"
-            type="com.example.project9.SensorViewModel" />
+    <variable
+        name="viewModelAccel"
+        type="com.example.project9.SensorsViewModel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
