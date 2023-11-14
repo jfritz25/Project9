@@ -26,7 +26,7 @@ class SelfieFragment: Fragment() {
         val url = SelfieFragmentArgs.fromBundle(requireArguments())
         Glide.with(requireContext()).load(url.url).into(binding.ivSelfie)
 
-        viewModelAccel.shakeEvent.observe(viewLifecycleOwner, Observer { isShaken ->
+        viewModelAccel?.shakeEvent?.observe(viewLifecycleOwner, Observer { isShaken ->
             if (isShaken) {
                 viewModelAccel.shakeEvent.value = false
                 view.findNavController().navigate(R.id.action_selfies_to_picture)

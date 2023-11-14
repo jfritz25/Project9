@@ -31,21 +31,21 @@ class SelfieViewModel : ViewModel() {
     val selfies: LiveData<MutableList<Selfie>>
         get() = _selfies
 
-    private lateinit var picturesCollection: DatabaseReference
-
     init {
 
         val firestoreDB = FirebaseFirestore.getInstance()
-        firestoreDB.collection("users")
-            .document(FirebaseAuth.getInstance().currentUser?.uid as String)
-            .get()
-            .addOnSuccessListener { userSnapshot ->
-                signedInUser = userSnapshot.toObject<User>()
-                Log.i(TAG, "signed in user: $signedInUser")
-            }
-            .addOnFailureListener { exception ->
-                Log.i(TAG, "Failure fetching signed in user", exception)
-            }
+//        firestoreDB.collection("users")
+//            .document(FirebaseAuth.getInstance().currentUser?.uid as String)
+//            .get()
+//            .addOnSuccessListener { userSnapshot ->
+//                signedInUser = userSnapshot.toObject<User>()
+//                Log.i(TAG, "signed in user: $signedInUser")
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.i(TAG, "Failure fetching signed in user", exception)
+//            }
+        val auth = FirebaseAuth.getInstance()
+        signedInUser = User(auth.currentUser?.email.toString())
         var selfiesReference = firestoreDB
             .collection("selfies")
             .limit(30)
