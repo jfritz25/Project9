@@ -77,7 +77,6 @@ class TakePictureFragment : Fragment() {
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
         val view = binding.root
         val viewModel : SelfieViewModel by activityViewModels()
-        binding.viewModel = viewModel
         firestoreDb = FirebaseFirestore.getInstance()
 
 
@@ -89,15 +88,15 @@ class TakePictureFragment : Fragment() {
         }
 
         // Set up the listeners for take photo and video capture buttons
-        binding.btnTakePicture.setOnClickListener { takePhoto(viewModel!!.signedInUser!!.email) }
+        binding.imageCaptureButton.setOnClickListener { takePhoto(viewModel!!.signedInUser!!.email, viewModel) }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         return view
     }
-    fun uploadImageToFirestore(email: String, imageUri: Uri) {
+    fun uploadImageToFirestore(email: String, imageUri: Uri, viewModel: SelfieViewModel) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-        val imagesRef = storageRef.child("users/${email}/images/${imageUri.lastPathSegment}")
+        val imagesRef = storageRef.child("images/${System.currentTimeMillis()}-photo.jpg")
 
         imagesRef.putFile(imageUri)
             .continueWithTask { photoUploadTask ->
@@ -117,12 +116,17 @@ class TakePictureFragment : Fragment() {
                         .show()
                 } else {
                     Toast.makeText(this.requireContext(), "Success!", Toast.LENGTH_SHORT).show()
+                    val selfie = Selfie(
+                        imageUri.toString(),
+                        User(email)
+                    )
+                    viewModel.selfies.value!!.add(selfie)
                     findNavController().navigate(R.id.action_picture_to_selfies)
                 }
             }
     }
 
-    private fun takePhoto(email: String) {
+    private fun takePhoto(email: String, viewModel: SelfieViewModel) {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
@@ -160,7 +164,7 @@ class TakePictureFragment : Fragment() {
                         onImageSaved(output: ImageCapture.OutputFileResults) {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(activity?.baseContext, msg, Toast.LENGTH_SHORT).show()
-                    output.savedUri?.let { uploadImageToFirestore(email,it) }
+                    output.savedUri?.let { uploadImageToFirestore(email,it,viewModel) }
                     Log.d(TAG, msg)
 
                 }
@@ -183,13 +187,15 @@ class TakePictureFragment : Fragment() {
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
+            val preview = Preview.Builder().build().also { it.setSurfaceProvider(binding.viewFinder.surfaceProvider) }
+
             try {
                 // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, imageCapture
+                    this, cameraSelector, preview, imageCapture
                 )
 
             } catch (exc: Exception) {

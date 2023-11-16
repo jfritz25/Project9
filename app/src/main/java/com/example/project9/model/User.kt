@@ -1,3 +1,7 @@
 package com.example.project9.model
 
-data class User(var email: String = "")
+import com.google.firebase.firestore.PropertyName
+
+data class User(
+    @get:PropertyName("email") @set:PropertyName("email")
+    var email: String = "")

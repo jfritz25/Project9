@@ -47,7 +47,6 @@ class SelfiesFragment : Fragment() {
         viewModel.selfies.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
-//                adapter.notifyDataSetChanged()
             }
         })
         viewModelAccel.shakeEvent.observe(viewLifecycleOwner, Observer { isShaken ->
