@@ -4,16 +4,11 @@
         name="viewModelAccel"
         type="com.example.project9.SensorsViewModel" />
     </data>
-    <LinearLayout
+
+    <ImageView
+        android:id="@+id/ivSelfie"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/ivSelfie"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
-            android:scaleType="centerCrop" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"/>
 </layout>

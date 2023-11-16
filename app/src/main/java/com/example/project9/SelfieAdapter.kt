@@ -14,22 +14,22 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 class SelfieAdapter(val context: Context)
-    : ListAdapter<Selfie, SelfieAdapter.PostItemViewHolder>(SelfieDiffItemCallback()) {
+    : ListAdapter<Selfie, SelfieAdapter.SelfieItemViewHolder>(SelfieDiffItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            : PostItemViewHolder = PostItemViewHolder.inflateFrom(parent)
-    override fun onBindViewHolder(holder: PostItemViewHolder, position: Int) {
+            : SelfieItemViewHolder = SelfieItemViewHolder.inflateFrom(parent)
+    override fun onBindViewHolder(holder: SelfieItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item, context)
     }
 
-    class PostItemViewHolder(val binding: LayoutSelfieBinding)
+    class SelfieItemViewHolder(val binding: LayoutSelfieBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun inflateFrom(parent: ViewGroup): PostItemViewHolder {
+            fun inflateFrom(parent: ViewGroup): SelfieItemViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = LayoutSelfieBinding.inflate(layoutInflater, parent, false)
-                return PostItemViewHolder(binding)
+                return SelfieItemViewHolder(binding)
             }
         }
 
