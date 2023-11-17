@@ -22,17 +22,24 @@ import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
 
 class SelfieViewModel : ViewModel() {
+    /**
+     * ViewModel class for managing the data related to selfies in the application.
+     */
 
 
     val TAG = "SelfieViewModel"
     var signedInUser: User? = null
     var selfie = MutableLiveData<Selfie>()
+
+    /** MutableLiveData holding a list of selfies as LiveData. */
     private val _selfies: MutableLiveData<MutableList<Selfie>> = MutableLiveData()
     val selfies: LiveData<MutableList<Selfie>>
         get() = _selfies
 
     init {
-
+        /**
+         * Initialization block for setting up the ViewModel.
+         */
         val firestoreDB = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         signedInUser = User(auth.currentUser?.email.toString())
