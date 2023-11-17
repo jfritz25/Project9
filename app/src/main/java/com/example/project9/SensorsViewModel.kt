@@ -15,21 +15,34 @@ import kotlin.math.sqrt
 
 
 class SensorsViewModel
-
+    /**
+     * ViewModel class for managing sensor-related functionality in the application.
+     */
     : ViewModel() {
+    /** Tag for logging purposes. */
     private val TAG = "SensorViewModel"
+
+    /** MeasurableSensor instance representing the accelerometer sensor. */
     private lateinit var accelerometerSensor: MeasurableSensor
     private var uri: Uri? = null
+
+    /** MutableLiveData indicating a shake event. */
     val shakeEvent = MutableLiveData<Boolean>()
 
     private var accelerometerData = floatArrayOf(
         SensorManager.GRAVITY_EARTH, SensorManager.GRAVITY_EARTH, 0.0F
     )
 
+    // Callback function triggered on a shake event.
     private fun onShake() {
         shakeEvent.value = true
     }
     fun initializeAccel(sAccelerometer: MeasurableSensor) {
+        /**
+         * Initializes the accelerometer sensor and sets up the listener for sensor value changes.
+         *
+         * @param sAccelerometer The MeasurableSensor representing the accelerometer.
+         */
 
         accelerometerSensor = sAccelerometer
         accelerometerSensor.startListening()
@@ -43,13 +56,11 @@ class SensorsViewModel
             accelerometerData[2] = accelerometerData[2] * 0.9f + delta
 
 
+            // Check for a shake event based on accelerometer data
             if (accelerometerData[2] > 8) {
                 onShake()
 
             }
-
-
-
         }
 
     }
