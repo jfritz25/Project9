@@ -25,7 +25,6 @@ class SelfiesFragment : Fragment() {
 
     private lateinit var sensorManager: SensorManager
 
-    private var sensor: Sensor? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,24 +37,20 @@ class SelfiesFragment : Fragment() {
         val viewModelAccel: SensorsViewModel by activityViewModels()
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
-        viewModelAccel.initializeAccel(Accelerometer(this.requireContext()))
-        binding.lifecycleOwner = viewLifecycleOwner
-
         val adapter = SelfieAdapter(this.requireContext())
         binding.rvSelfies.adapter = adapter
+        viewModelAccel.initializeAccel(Accelerometer(this.requireContext()))
         viewModel.selfies.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
-//                adapter.notifyDataSetChanged()
             }
         })
-        viewModelAccel.shakeEvent.observe(viewLifecycleOwner, Observer { isShaken ->
+        viewModelAccel.shakeEvent.observe(viewLifecycleOwner) { isShaken ->
             if (isShaken) {
                 viewModelAccel.shakeEvent.value = false
                 view.findNavController().navigate(R.id.action_selfies_to_picture)
             }
-        })
+        }
         binding.logout.setOnClickListener {
             viewModel.signOut()
             view.findNavController().navigate(R.id.action_selfies_to_login)

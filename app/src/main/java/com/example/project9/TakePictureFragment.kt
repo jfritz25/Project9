@@ -20,10 +20,13 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.project9.databinding.FragmentTakePhotoBinding
 import com.example.project9.model.Selfie
 import com.example.project9.model.User
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -41,6 +44,7 @@ class TakePictureFragment : Fragment() {
     private val binding get() = _binding!!
     private var imageCapture: ImageCapture? = null
 
+    private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var cameraExecutor: ExecutorService
 
     private val activityResultLauncher =
@@ -72,6 +76,8 @@ class TakePictureFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
         val view = binding.root
+        val viewModel : SelfieViewModel by activityViewModels()
+        firestoreDb = FirebaseFirestore.getInstance()
 
 
         // Request camera permissions
@@ -82,29 +88,45 @@ class TakePictureFragment : Fragment() {
         }
 
         // Set up the listeners for take photo and video capture buttons
-        binding.btnTakePicture.setOnClickListener { takePhoto() }
+        binding.imageCaptureButton.setOnClickListener { takePhoto(viewModel!!.signedInUser!!.email, viewModel) }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         return view
     }
-    fun uploadImageToFirestore(imageUri: Uri) {
+    fun uploadImageToFirestore(email: String, imageUri: Uri, viewModel: SelfieViewModel) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-        val imagesRef = storageRef.child("users/${binding.viewModel?.signedInUser.toString()}/images/${imageUri.lastPathSegment}")
+        val imagesRef = storageRef.child("images/${System.currentTimeMillis()}-photo.jpg")
 
-        val uploadTask = imagesRef.putFile(imageUri)
-        uploadTask.addOnFailureListener {
-            Log.d("Upload", "Failed to upload image")
-        }.addOnSuccessListener { taskSnapshot ->
-            Log.d("Upload", "Image uploaded successfully")
-            val s = Selfie(imageUri.toString(), User(binding.viewModel?.signedInUser!!.username))
-            binding.viewModel?.selfies?.value?.add(s)
-            view?.findNavController()?.navigate(R.id.action_picture_to_selfies)
-
-        }
+        imagesRef.putFile(imageUri)
+            .continueWithTask { photoUploadTask ->
+                Log.i(TAG, "uploaded bytes: ${photoUploadTask.result?.bytesTransferred}")
+                imagesRef.downloadUrl
+            }.continueWithTask { downloadUrlTask ->
+                // Create a post object with the image URL and add that to the posts collection
+                val selfie = Selfie(
+                    imageUri.toString(),
+                    User(email)
+                )
+                firestoreDb.collection("selfies").add(selfie)
+            }.addOnCompleteListener { postCreationTask ->
+                if (!postCreationTask.isSuccessful) {
+                    Log.e(TAG, "Exception during Firebase operations", postCreationTask.exception)
+                    Toast.makeText(this.requireContext(), "Failed to save post", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(this.requireContext(), "Success!", Toast.LENGTH_SHORT).show()
+                    val selfie = Selfie(
+                        imageUri.toString(),
+                        User(email)
+                    )
+                    viewModel.selfies.value!!.add(selfie)
+                    findNavController().navigate(R.id.action_picture_to_selfies)
+                }
+            }
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(email: String, viewModel: SelfieViewModel) {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
@@ -142,7 +164,7 @@ class TakePictureFragment : Fragment() {
                         onImageSaved(output: ImageCapture.OutputFileResults) {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(activity?.baseContext, msg, Toast.LENGTH_SHORT).show()
-                    output.savedUri?.let { uploadImageToFirestore(it) }
+                    output.savedUri?.let { uploadImageToFirestore(email,it,viewModel) }
                     Log.d(TAG, msg)
 
                 }
@@ -165,13 +187,15 @@ class TakePictureFragment : Fragment() {
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
+            val preview = Preview.Builder().build().also { it.setSurfaceProvider(binding.viewFinder.surfaceProvider) }
+
             try {
                 // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, imageCapture
+                    this, cameraSelector, preview, imageCapture
                 )
 
             } catch (exc: Exception) {
