@@ -33,12 +33,13 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TakePhotoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class TakePictureFragment : Fragment() {
+    /**
+     * A simple [Fragment] subclass.
+     * Use the [TakePhotoFragment.newInstance] factory method to
+     * create an instance of this fragment.
+     */
     private val TAG = "TakePictureFragment"
     private var _binding: FragmentTakePhotoBinding? = null
     private val binding get() = _binding!!
@@ -73,6 +74,14 @@ class TakePictureFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        /**
+         * Called to have the fragment instantiate its user interface view.
+         *
+         * @param inflater The LayoutInflater object that can be used to inflate views.
+         * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+         * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+         * @return The created view or null.
+         */
         // Inflate the layout for this fragment
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -94,6 +103,13 @@ class TakePictureFragment : Fragment() {
         return view
     }
     fun uploadImageToFirestore(email: String, imageUri: Uri, viewModel: SelfieViewModel) {
+        /**
+         * Uploads the captured image to Firebase Firestore storage.
+         *
+         * @param email The email of the signed-in user.
+         * @param imageUri The Uri of the captured image.
+         * @param viewModel The SelfieViewModel for updating the selfie list.
+         */
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
         val imagesRef = storageRef.child("images/${System.currentTimeMillis()}-photo.jpg")
